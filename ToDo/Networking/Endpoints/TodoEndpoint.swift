@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TaskEndpoint: EndpointProtocol {
+enum TodoEndpoint: EndpointProtocol {
     case fetchTasks
     
     var path: String {

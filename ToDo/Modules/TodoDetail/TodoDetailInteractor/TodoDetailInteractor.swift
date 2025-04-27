@@ -9,8 +9,8 @@ import Foundation
 
 protocol ITodoDetailInteractor {}
 
-final class TaskDetailInteractor {
+final class TodoDetailInteractor {
     init() {}
 }
 
-extension TaskDetailInteractor: ITodoDetailInteractor {}
+extension TodoDetailInteractor: ITodoDetailInteractor {}
