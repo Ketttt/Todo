@@ -66,7 +66,7 @@ extension CoreDataManager {
         return todo
     }
     
-    static func updateCoreData(with newTasks: [Todo]) {
+    static func updateCoreData(with newTodos: [Todo]) {
         let context = CoreDataManager.context
         let fetchRequest: NSFetchRequest<Note> = Note.fetchRequest()
         
@@ -74,16 +74,16 @@ extension CoreDataManager {
             let existingNotes = try context.fetch(fetchRequest)
             let existingIDs = Array(existingNotes.map { $0.id })
             
-            for task in newTasks {
-                if !existingIDs.contains(Int64(task.id)) {
+            for todo in newTodos {
+                if !existingIDs.contains(Int64(todo.id)) {
                     let note = Note(context: context)
-                    note.id = Int64(task.id)
-                    note.title = task.todo
-                    note.body = task.body
-                    note.completed = task.completed
-                    note.date = task.date
+                    note.id = Int64(todo.id)
+                    note.title = todo.todo
+                    note.body = todo.body
+                    note.completed = todo.completed
+                    note.date = todo.date
                 } else {
-                    //                    print("Задача уже существует: \(task.id)")
+                    print("Задача уже существует: \(todo.id)")
                 }
             }
             try context.save()

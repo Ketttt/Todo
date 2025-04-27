@@ -11,7 +11,7 @@
 		D128BD622D53CA6C005D6FB2 /* Todos.swift in Sources */ = {isa = PBXBuildFile; fileRef = D128BD612D53CA6C005D6FB2 /* Todos.swift */; };
 		D128BD652D53F6A9005D6FB2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D128BD642D53F6A9005D6FB2 /* NetworkService.swift */; };
 		D128BD672D53F8E7005D6FB2 /* EndpointProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D128BD662D53F8E7005D6FB2 /* EndpointProtocol.swift */; };
-		D128BD6A2D540AC6005D6FB2 /* TaskEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D128BD692D540AC6005D6FB2 /* TaskEndpoint.swift */; };
+		D128BD6A2D540AC6005D6FB2 /* TodoEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D128BD692D540AC6005D6FB2 /* TodoEndpoint.swift */; };
 		D128BD6D2D540D72005D6FB2 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D128BD6C2D540D72005D6FB2 /* NetworkError.swift */; };
 		D128BD6F2D541A07005D6FB2 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D128BD6E2D541A07005D6FB2 /* APIClient.swift */; };
 		D13F1CD42DB67D0F004AD683 /* UITextView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13F1CD32DB67D0F004AD683 /* UITextView+Extension.swift */; };
@@ -19,7 +19,7 @@
 		D14286702D64851A0091242D /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D142866F2D64851A0091242D /* NetworkMonitor.swift */; };
 		D154DBA92D5A2C8B00630BF0 /* TodoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D154DBA82D5A2C8B00630BF0 /* TodoDetailViewController.swift */; };
 		D154DBAF2D5A3B6700630BF0 /* TodoDetailAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = D154DBAE2D5A3B6700630BF0 /* TodoDetailAssembly.swift */; };
-		D154DBB12D5A3C4B00630BF0 /* TaskDetailInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D154DBB02D5A3C4B00630BF0 /* TaskDetailInteractor.swift */; };
+		D154DBB12D5A3C4B00630BF0 /* TodoDetailInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D154DBB02D5A3C4B00630BF0 /* TodoDetailInteractor.swift */; };
 		D154DBB32D5A3C9A00630BF0 /* TaskDetailRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D154DBB22D5A3C9A00630BF0 /* TaskDetailRouter.swift */; };
 		D154DBB52D5A3CD300630BF0 /* TodoDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D154DBB42D5A3CD300630BF0 /* TodoDetailPresenter.swift */; };
 		D1611FB92D54FA1200E2D45B /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1611FB82D54FA1200E2D45B /* BottomBarView.swift */; };
@@ -65,7 +65,7 @@
 		D128BD612D53CA6C005D6FB2 /* Todos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todos.swift; sourceTree = "<group>"; };
 		D128BD642D53F6A9005D6FB2 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		D128BD662D53F8E7005D6FB2 /* EndpointProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndpointProtocol.swift; sourceTree = "<group>"; };
-		D128BD692D540AC6005D6FB2 /* TaskEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskEndpoint.swift; sourceTree = "<group>"; };
+		D128BD692D540AC6005D6FB2 /* TodoEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoEndpoint.swift; sourceTree = "<group>"; };
 		D128BD6C2D540D72005D6FB2 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		D128BD6E2D541A07005D6FB2 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		D13F1CD32DB67D0F004AD683 /* UITextView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Extension.swift"; sourceTree = "<group>"; };
@@ -74,7 +74,7 @@
 		D151A6102D65205D00210926 /* ToDo 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ToDo 2.xcdatamodel"; sourceTree = "<group>"; };
 		D154DBA82D5A2C8B00630BF0 /* TodoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoDetailViewController.swift; sourceTree = "<group>"; };
 		D154DBAE2D5A3B6700630BF0 /* TodoDetailAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoDetailAssembly.swift; sourceTree = "<group>"; };
-		D154DBB02D5A3C4B00630BF0 /* TaskDetailInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailInteractor.swift; sourceTree = "<group>"; };
+		D154DBB02D5A3C4B00630BF0 /* TodoDetailInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoDetailInteractor.swift; sourceTree = "<group>"; };
 		D154DBB22D5A3C9A00630BF0 /* TaskDetailRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailRouter.swift; sourceTree = "<group>"; };
 		D154DBB42D5A3CD300630BF0 /* TodoDetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoDetailPresenter.swift; sourceTree = "<group>"; };
 		D1611FB82D54FA1200E2D45B /* BottomBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarView.swift; sourceTree = "<group>"; };
@@ -159,7 +159,7 @@
 			isa = PBXGroup;
 			children = (
 				D128BD662D53F8E7005D6FB2 /* EndpointProtocol.swift */,
-				D128BD692D540AC6005D6FB2 /* TaskEndpoint.swift */,
+				D128BD692D540AC6005D6FB2 /* TodoEndpoint.swift */,
 			);
 			path = Endpoints;
 			sourceTree = "<group>";
@@ -211,7 +211,7 @@
 		D154DBAD2D5A3A9F00630BF0 /* TodoDetailInteractor */ = {
 			isa = PBXGroup;
 			children = (
-				D154DBB02D5A3C4B00630BF0 /* TaskDetailInteractor.swift */,
+				D154DBB02D5A3C4B00630BF0 /* TodoDetailInteractor.swift */,
 			);
 			path = TodoDetailInteractor;
 			sourceTree = "<group>";
@@ -503,11 +503,11 @@
 			files = (
 				D1F948362D5E4A1800A3FB66 /* UIView+Extensions.swift in Sources */,
 				D14286702D64851A0091242D /* NetworkMonitor.swift in Sources */,
-				D154DBB12D5A3C4B00630BF0 /* TaskDetailInteractor.swift in Sources */,
+				D154DBB12D5A3C4B00630BF0 /* TodoDetailInteractor.swift in Sources */,
 				D128BD652D53F6A9005D6FB2 /* NetworkService.swift in Sources */,
 				D128BD6F2D541A07005D6FB2 /* APIClient.swift in Sources */,
 				D154DBAF2D5A3B6700630BF0 /* TodoDetailAssembly.swift in Sources */,
-				D128BD6A2D540AC6005D6FB2 /* TaskEndpoint.swift in Sources */,
+				D128BD6A2D540AC6005D6FB2 /* TodoEndpoint.swift in Sources */,
 				D13F1CD42DB67D0F004AD683 /* UITextView+Extension.swift in Sources */,
 				D1611FB92D54FA1200E2D45B /* BottomBarView.swift in Sources */,
 				D154DBB52D5A3CD300630BF0 /* TodoDetailPresenter.swift in Sources */,

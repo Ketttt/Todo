@@ -1,5 +1,5 @@
 //
-//  TaskViewController.swift
+//  TodoDetailViewController.swift
 //  ToDo
 //
 //  Created by Katerina Dev on 10.02.25.
@@ -229,11 +229,11 @@ final class TodoDetailViewController: UIViewController {
         let body = (noteTextView.textColor == .lightGray) ? nil : noteTextView.text.nilIfEmpty
         
         guard title != nil || body != nil else { return }
-        guard let isNewTask = presenter?.isNewTask else { return }
+        guard let isNewTodo = presenter?.isNewTodo else { return }
         
         Task {
-            if isNewTask {
-                await presenter?.addTask(todo: title, body: body)
+            if isNewTodo {
+                await presenter?.addTodo(todo: title, body: body)
             } else {
                 await presenter?.updateTodo(todo: title, body: body)
             }

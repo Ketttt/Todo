@@ -8,7 +8,7 @@
 import UIKit
 
 protocol IToDoRouter {
-    func openTaskDetail(todo: Todo?, output: TodoListModuleInput, isNewTask: Bool)
+    func openTodoDetail(todo: Todo?, output: TodoListModuleInput, isNewTodo: Bool)
 }
 
 final class TodoListRouter {
@@ -22,9 +22,9 @@ final class TodoListRouter {
 
 extension TodoListRouter: IToDoRouter {
     
-    func openTaskDetail(todo: Todo?, output: TodoListModuleInput, isNewTask: Bool) {
+    func openTodoDetail(todo: Todo?, output: TodoListModuleInput, isNewTodo: Bool) {
         guard let navigation = viewController?.navigationController else { return }
-        let taskDetail = TodoDetailAssembly().makeModule(todo: todo, output: output, isNewTask: isNewTask)
-        navigation.pushViewController(taskDetail, animated: true)
+        let todoDetail = TodoDetailAssembly().makeModule(todo: todo, output: output, isNewTodo: isNewTodo)
+        navigation.pushViewController(todoDetail, animated: true)
     }
 }

@@ -1,5 +1,5 @@
 //
-//  TaskCell.swift
+//  TodoCell.swift
 //  ToDo
 //
 //  Created by Katerina Dev on 5.02.25.
@@ -19,7 +19,7 @@ final class TodoCell: UITableViewCell {
         return button
     }()
     
-    private let taskTitle: UILabel = {
+    private let todoTitle: UILabel = {
         let label = UILabel()
         label.textColor = .white
         label.numberOfLines = 1
@@ -28,7 +28,7 @@ final class TodoCell: UITableViewCell {
         return label
     }()
     
-    private let taskDescription: UILabel = {
+    private let todoDescription: UILabel = {
         let label = UILabel()
         label.textColor = .white
         label.numberOfLines = 2
@@ -38,7 +38,7 @@ final class TodoCell: UITableViewCell {
         return label
     }()
     
-    private let taskDate: UILabel = {
+    private let todoDate: UILabel = {
         let label = UILabel()
         label.textColor = .darkGray
         label.font = .systemFont(ofSize: 12)
@@ -76,9 +76,9 @@ final class TodoCell: UITableViewCell {
     }
     
     private func setUp() {
-        textStackView.addArrangedSubview(taskTitle)
-        textStackView.addArrangedSubview(taskDescription)
-        textStackView.addArrangedSubview(taskDate)
+        textStackView.addArrangedSubview(todoTitle)
+        textStackView.addArrangedSubview(todoDescription)
+        textStackView.addArrangedSubview(todoDate)
         self.contentView.addSubview(textStackView)
         if !isMenu {
             self.contentView.addSubview(checkBox)
@@ -101,31 +101,31 @@ final class TodoCell: UITableViewCell {
         NSLayoutConstraint.activate(isMenu ? mainConstraints : constr + mainConstraints)
     }
     
-    func configure(task: Todo) {
-        checkBox.setImage(UIImage(resource: task.completed ? .doneIcon : .circle), for: .normal)
-        taskDescription.text = task.body
-        taskTitle.text = task.todo
-        taskDate.text = task.date.getFormattedDate(format: "dd/MM/YYYY")
-        taskDescription.textColor = task.completed ? .darkGray : .white
-        taskTitle.textColor = task.completed ? .darkGray : .white
+    func configure(todo: Todo) {
+        checkBox.setImage(UIImage(resource: todo.completed ? .doneIcon : .circle), for: .normal)
+        todoDescription.text = todo.body
+        todoTitle.text = todo.todo
+        todoDate.text = todo.date.getFormattedDate(format: "dd/MM/YYYY")
+        todoDescription.textColor = todo.completed ? .darkGray : .white
+        todoTitle.textColor = todo.completed ? .darkGray : .white
         
-        if task.completed {
+        if todo.completed {
             let text = NSAttributedString(
-                string: task.todo,
+                string: todo.todo,
                 attributes: [
                     .strikethroughStyle: NSUnderlineStyle.single.rawValue,
                     .foregroundColor: UIColor.darkGray
                 ]
             )
-            taskTitle.attributedText = text
+            todoTitle.attributedText = text
         } else {
-            taskTitle.text = task.todo
+            todoTitle.text = todo.todo
         }
     }
     
     func defaultState() {
         let text = NSAttributedString(string: "", attributes: [:])
-        taskTitle.attributedText = text
+        todoTitle.attributedText = text
     }
     
     @objc func checkToDo(_ sender: UIButton) {

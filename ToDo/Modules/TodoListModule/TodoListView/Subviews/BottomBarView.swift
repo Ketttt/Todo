@@ -9,7 +9,7 @@ import UIKit
 
 final class BottomBarView: UIView {
     
-    private let taskCountLabel: UILabel = {
+    private let todoCountLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
         label.font = .systemFont(ofSize: 11)
@@ -38,12 +38,12 @@ final class BottomBarView: UIView {
     
     private func setUp() {
         backgroundColor = #colorLiteral(red: 0.1529409289, green: 0.1529413164, blue: 0.1615334749, alpha: 1)
-        addSubview(taskCountLabel)
+        addSubview(todoCountLabel)
         addSubview(addButton)
         
         NSLayoutConstraint.activate([
-            taskCountLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            taskCountLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            todoCountLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            todoCountLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             
             addButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             addButton.centerYAnchor.constraint(equalTo: centerYAnchor)
@@ -51,7 +51,7 @@ final class BottomBarView: UIView {
     }
     
     func updateTakCount(_ count: Int) {
-        taskCountLabel.text = "\(count) Задач"
+        todoCountLabel.text = "\(count) Задач"
     }
     
     func setAddButtonAction(target: Any, action: Selector) {

@@ -11,8 +11,8 @@ import UIKit
 @MainActor
 protocol ITodoListView {
     func showTodoList(_ todos: [Todo])
-    func showTaskAtRow(_ task: Todo)
-    func didDeleteTask(_ task: Todo)
+    func showTodoAtRow(_ todo: Todo)
+    func didDeleteTodo(_ todo: Todo)
     func refreshUpdatedTodo(todo: Todo)
     func addNewTodo(todo: Todo)
     func showSearchResults(_ todos: [Todo])
@@ -36,7 +36,7 @@ final class TodoListViewController: UIViewController {
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .black
-        tableView.register(TodoCell.self, forCellReuseIdentifier: "TaskCell")
+        tableView.register(TodoCell.self, forCellReuseIdentifier: "TodoCell")
         tableView.rowHeight = UITableView.automaticDimension
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.keyboardDismissMode = .onDrag
@@ -134,14 +134,14 @@ final class TodoListViewController: UIViewController {
             bottomBar.heightAnchor.constraint(equalToConstant: 49)
         ])
         
-        bottomBar.setAddButtonAction(target: self, action: #selector(addTaskTapped))
+        bottomBar.setAddButtonAction(target: self, action: #selector(addTodoTapped))
     }
     
-    @objc private func addTaskTapped() {
-        presenter?.showTaskDetail(todo: nil, true)
+    @objc private func addTodoTapped() {
+        presenter?.showTodoDetail(todo: nil, true)
     }
     
-    private func editTask(todo: Todo) {
+    private func editTodo(todo: Todo) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             guard let self = self else { return }
             
@@ -167,25 +167,25 @@ extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath) as? TodoCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TodoCell", for: indexPath) as? TodoCell else {
             return UITableViewCell()
         }
         
-        let taskDTO = currentTodos[indexPath.row]
+        let todo = currentTodos[indexPath.row]
         cell.selectionStyle = .none
-        cell.configure(task: taskDTO)
+        cell.configure(todo: todo)
         cell.backgroundColor = .black
         cell.actionHandler = { [weak self] in
             guard let self else { return }
-            let task = self.currentTodos[indexPath.row]
-            presenter?.checkButtonClicked(task)
+            let todo = self.currentTodos[indexPath.row]
+            presenter?.checkButtonClicked(todo)
         }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedTask = currentTodos[indexPath.row]
-        presenter?.showTaskDetail(todo: selectedTask, false)
+        let selectedTodo = currentTodos[indexPath.row]
+        presenter?.showTodoDetail(todo: selectedTodo, false)
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -195,8 +195,8 @@ extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
                 completionHandler(false)
                 return
             }
-            let task = currentTodos[indexPath.row]
-            self.presenter?.deleteTodo(task)
+            let todo = currentTodos[indexPath.row]
+            self.presenter?.deleteTodo(todo)
             completionHandler(true)
         }
         
@@ -207,10 +207,10 @@ extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        let taskDTO = self.currentTodos[indexPath.item]
+        let todo = self.currentTodos[indexPath.item]
         
         return UIContextMenuConfiguration(identifier: nil, previewProvider: {
-            return self.makePreviewViewController(for: taskDTO)
+            return self.makePreviewViewController(for: todo)
         }) { [weak self] _ in
             
             guard let self = self else { return UIMenu() }
@@ -219,7 +219,7 @@ extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
                 title: "Редактировать",
                 image: UIImage(resource: .edit)
             ) { _ in
-                self.presenter?.showTaskDetail(todo: taskDTO, false)
+                self.presenter?.showTodoDetail(todo: todo, false)
             }
             let export = UIAction(
                 title: "Поделиться",
@@ -231,19 +231,19 @@ extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
                 title: "Удалить",
                 image: UIImage(resource: .trash)
             ) { _ in
-                self.didDeleteTask(taskDTO)
+                self.didDeleteTodo(todo)
             }
             let menu = UIMenu(title: "", children: [edit, export, trash])
             return menu
         }
     }
     
-    private func makePreviewViewController(for task: Todo) -> UIViewController {
+    private func makePreviewViewController(for todo: Todo) -> UIViewController {
         let previewVC = UIViewController()
         previewVC.view.backgroundColor = #colorLiteral(red: 0.1529409289, green: 0.1529413164, blue: 0.1615334749, alpha: 1)
         
-        let taskCell = TodoCell(style: .default, reuseIdentifier: nil, true)
-        taskCell.configure(task: task)
+        let todoCell = TodoCell(style: .default, reuseIdentifier: nil, true)
+        todoCell.configure(todo: todo)
         
         previewVC.view.layer.cornerRadius = 12
         previewVC.view.layer.masksToBounds = true
@@ -251,16 +251,16 @@ extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
         
         let targetWidth = UIScreen.main.bounds.width - 40
         let targetSize = CGSize(width: targetWidth, height: UIView.layoutFittingCompressedSize.height)
-        let calculatedHeight = taskCell.systemLayoutSizeFitting(targetSize).height
+        let calculatedHeight = todoCell.systemLayoutSizeFitting(targetSize).height
         
-        previewVC.view.addSubview(taskCell)
+        previewVC.view.addSubview(todoCell)
         
-        taskCell.translatesAutoresizingMaskIntoConstraints = false
+        todoCell.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            taskCell.leadingAnchor.constraint(equalTo: previewVC.view.leadingAnchor),
-            taskCell.trailingAnchor.constraint(equalTo: previewVC.view.trailingAnchor),
-            taskCell.topAnchor.constraint(equalTo: previewVC.view.topAnchor),
-            taskCell.bottomAnchor.constraint(equalTo: previewVC.view.bottomAnchor),
+            todoCell.leadingAnchor.constraint(equalTo: previewVC.view.leadingAnchor),
+            todoCell.trailingAnchor.constraint(equalTo: previewVC.view.trailingAnchor),
+            todoCell.topAnchor.constraint(equalTo: previewVC.view.topAnchor),
+            todoCell.bottomAnchor.constraint(equalTo: previewVC.view.bottomAnchor),
         ])
         
         previewVC.preferredContentSize = CGSize(
@@ -291,12 +291,12 @@ extension TodoListViewController: ITodoListView {
         tableView.reloadData()
     }
     
-    func didDeleteTask(_ task: Todo) {
-        guard let index = todos.firstIndex(where: { $0.id == task.id }) else { return }
+    func didDeleteTodo(_ todo: Todo) {
+        guard let index = todos.firstIndex(where: { $0.id == todo.id }) else { return }
         UIView.animate(withDuration: 0.3) {
             self.todos.remove(at: index)
             if self.searchController.isActive {
-                if let filteredIndex = self.filteredTodos.firstIndex(where: { $0.id == task.id }) {
+                if let filteredIndex = self.filteredTodos.firstIndex(where: { $0.id == todo.id }) {
                     self.filteredTodos.remove(at: filteredIndex)
                     self.tableView.deleteRows(at: [IndexPath(row: filteredIndex, section: .zero)], with: .left)
                 }
@@ -307,8 +307,8 @@ extension TodoListViewController: ITodoListView {
         self.bottomBar.updateTakCount(todos.count)
     }
     
-    func showTaskAtRow(_ task: Todo) {
-        editTask(todo: task)
+    func showTodoAtRow(_ todo: Todo) {
+        editTodo(todo: todo)
     }
     
     func showTodoList(_ todos: [Todo]) {
@@ -318,7 +318,7 @@ extension TodoListViewController: ITodoListView {
     }
     
     func refreshUpdatedTodo(todo: Todo) {
-        editTask(todo: todo)
+        editTodo(todo: todo)
     }
     
     func addNewTodo(todo: Todo) {

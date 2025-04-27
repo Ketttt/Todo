@@ -1,5 +1,5 @@
 //
-//  TaskEndpoint.swift
+//  TodoEndpoint.swift
 //  ToDo
 //
 //  Created by Katerina Dev on 6.02.25.
@@ -8,17 +8,17 @@
 import Foundation
 
 enum TodoEndpoint: EndpointProtocol {
-    case fetchTasks
+    case fetchTodos
     
     var path: String {
         switch self {
-        case .fetchTasks: "/todos"
+        case .fetchTodos: "/todos"
         }
     }
     
     var method: String {
         switch self {
-        case .fetchTasks: return "GET"
+        case .fetchTodos: return "GET"
         }
     }
     
@@ -28,7 +28,7 @@ enum TodoEndpoint: EndpointProtocol {
     
     var body: Data? {
         switch self {
-        case.fetchTasks:
+        case.fetchTodos:
             return nil
         }
     }

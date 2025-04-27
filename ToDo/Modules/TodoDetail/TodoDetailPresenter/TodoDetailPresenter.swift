@@ -1,5 +1,5 @@
 //
-//  TaskDetailPresenter.swift
+//  TodoDetailPresenter.swift
 //  ToDo
 //
 //  Created by Katerina Dev on 10.02.25.
@@ -11,8 +11,8 @@ protocol ITodoDetailPresenter {
     func onBackButtonTapped()
     var todo: Todo? { get set }
     func updateTodo(todo: String?, body: String?) async
-    func addTask(todo: String?, body: String?) async
-    var isNewTask: Bool { get set }
+    func addTodo(todo: String?, body: String?) async
+    var isNewTodo: Bool { get set }
 }
 
 final class TodoDetailPresenter {
@@ -22,20 +22,20 @@ final class TodoDetailPresenter {
     var todo: Todo?
     var output: TodoListModuleInput
     
-    var isNewTask: Bool
+    var isNewTodo: Bool
     
     init(interactor: ITodoDetailInteractor,
          router: ITodoDetailRouter,
          view: ITodoDetailViewController,
          todo: Todo?,
          output: TodoListModuleInput,
-         isNewTask: Bool) {
+         isNewTodo: Bool) {
         self.interactor = interactor
         self.router = router
         self.view = view
         self.todo = todo
         self.output = output
-        self.isNewTask = isNewTask
+        self.isNewTodo = isNewTodo
     }
 }
 
@@ -61,7 +61,7 @@ extension TodoDetailPresenter: ITodoDetailPresenter {
         }
     }
     
-    func addTask(todo: String?, body: String?) async {
+    func addTodo(todo: String?, body: String?) async {
         do {
             guard let addTodo = try CoreDataManager.addTodo(title: todo, body: body)
             else { return }

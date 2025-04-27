@@ -9,9 +9,9 @@ import Foundation
 
 protocol ITodoListPresenter {
     func loadTodos()
-    func showTaskDetail(todo: Todo?,_ isNewTask: Bool)
-    func checkButtonClicked(_ task: Todo)
-    func deleteTodo(_ task: Todo)
+    func showTodoDetail(todo: Todo?,_ isNewTodo: Bool)
+    func checkButtonClicked(_ todo: Todo)
+    func deleteTodo(_ todo: Todo)
     func searchTodo(searchText: String)
 }
 
@@ -33,28 +33,28 @@ extension TodoListPresenter: ITodoListPresenter {
             do {
                 if UserDefaults.standard.isFirstLaunch {
                     if NetworkMonitor.shared.hasInternetConnection()  {
-                        let serverTasks = try await interactor.fetchTasks()
+                        let serverTodo = try await interactor.fetchTodos()
                         
-                        let tasks = serverTasks.todos.map({
+                        let todo = serverTodo.todos.map({
                             return $0
                         })
-                        CoreDataManager.updateCoreData(with: tasks)
+                        CoreDataManager.updateCoreData(with: todo)
                         UserDefaults.standard.isFirstLaunch = false
                     }
                 }
-                let updatedTasks = try CoreDataManager.fetchTodoFromCoreData()
-                await view.showTodoList(updatedTasks)
+                let updatedTodos = try CoreDataManager.fetchTodoFromCoreData()
+                await view.showTodoList(updatedTodos)
             } catch let error {
                 print("Ошибка загрузки задач:", error.localizedDescription)
             }
         }
     }
     
-    func checkButtonClicked(_ task: Todo) {
+    func checkButtonClicked(_ todo: Todo) {
         Task {
             do {
-                let updatedTask = try CoreDataManager.updateCompletedTodo(id: task.id)
-                await view.showTaskAtRow(updatedTask)
+                let updatedTodo = try CoreDataManager.updateCompletedTodo(id: todo.id)
+                await view.showTodoAtRow(updatedTodo)
             } catch CoreDataError.saveFailed(let error) {
                 await view.showError(message: "Не удалось сохранить изменения: \(error.localizedDescription)")
             } catch {
@@ -63,11 +63,11 @@ extension TodoListPresenter: ITodoListPresenter {
         }
     }
     
-    func deleteTodo(_ task: Todo) {
+    func deleteTodo(_ todo: Todo) {
         Task {
             do {
-                let deleteTask = try CoreDataManager.deleteTodo(id: task.id)
-                await self.view.didDeleteTask(deleteTask)
+                let deleteTodo = try CoreDataManager.deleteTodo(id: todo.id)
+                await self.view.didDeleteTodo(deleteTodo)
             } catch CoreDataError.saveFailed(let error) {
                 await view.showError(message: "Не удалось сохранить изменения: \(error.localizedDescription)")
             } catch {
@@ -91,8 +91,8 @@ extension TodoListPresenter: ITodoListPresenter {
         }
     }
     
-    func showTaskDetail(todo: Todo?,_ isNewTask: Bool) {
-        router.openTaskDetail(todo: todo, output: self, isNewTask: isNewTask)
+    func showTodoDetail(todo: Todo?,_ isNewTodo: Bool) {
+        router.openTodoDetail(todo: todo, output: self, isNewTodo: isNewTodo)
     }
 }
 

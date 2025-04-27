@@ -8,7 +8,7 @@
 import Foundation
 
 protocol IToDoInteractor: AnyObject {
-    func fetchTasks() async throws -> Todos
+    func fetchTodos() async throws -> Todos
 }
 
 final class TodoListInteractor {
@@ -21,8 +21,8 @@ final class TodoListInteractor {
 
 extension TodoListInteractor: IToDoInteractor {
     
-    func fetchTasks() async throws -> Todos {
-        return try await apiClient.fetchTasks()
+    func fetchTodos() async throws -> Todos {
+        return try await apiClient.fetchTodos()
     }
 }
 

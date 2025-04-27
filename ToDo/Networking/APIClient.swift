@@ -8,7 +8,7 @@
 import Foundation
 
 protocol APIClientProtocol {
-    func fetchTasks() async throws -> Todos
+    func fetchTodos() async throws -> Todos
 }
 
 final class APIClient: APIClientProtocol {
@@ -22,11 +22,11 @@ final class APIClient: APIClientProtocol {
         self.networkMonitor = networkMonitor
     }
     
-    func fetchTasks() async throws -> Todos {
+    func fetchTodos() async throws -> Todos {
         guard networkMonitor.hasInternetConnection() else {
             throw NetworkError.noInternetConnection
         }
-        return try await networkService.request(endpoint: TaskEndpoint.fetchTasks)
+        return try await networkService.request(endpoint: TodoEndpoint.fetchTodos)
     }
 }
 
