@@ -28,3 +28,16 @@ extension UITextView {
         return textColor == .lightGray
     }
 }
+
+extension UITextView {
+    static func makeTextView(fontSize: CGFloat, isBold: Bool) -> UITextView {
+        let textView = UITextView()
+        textView.textColor = .white
+        textView.font = isBold ? .boldSystemFont(ofSize: fontSize) : .systemFont(ofSize: fontSize)
+        textView.backgroundColor = .clear
+        textView.textContainerInset = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
+        textView.isScrollEnabled = false
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        return textView
+    }
+}

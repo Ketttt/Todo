@@ -31,6 +31,9 @@ extension TodoListPresenter: ITodoListPresenter {
     func loadTodos() {
         Task {
             do {
+                
+                await view.showLoading(true)
+                
                 if UserDefaults.standard.isFirstLaunch {
                     if NetworkMonitor.shared.hasInternetConnection()  {
                         let serverTodo = try await interactor.fetchTodos()
@@ -46,7 +49,9 @@ extension TodoListPresenter: ITodoListPresenter {
                 await view.showTodoList(updatedTodos)
             } catch let error {
                 print("Ошибка загрузки задач:", error.localizedDescription)
+                await view.showError(message: "Не удалось загрузить задачи")
             }
+            await view.showLoading(false)
         }
     }
     

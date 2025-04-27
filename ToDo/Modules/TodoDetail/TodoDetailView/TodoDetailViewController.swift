@@ -7,16 +7,19 @@
 
 import UIKit
 
+//MARK: - ITodoDetailViewController Protocol
 @MainActor
-protocol ITodoDetailViewController {
+protocol ITodoDetailView {
     func showError(message: String)
 }
 
+//MARK: - TodoDetailViewController
 final class TodoDetailViewController: UIViewController {
     
     // MARK: - Properties
     var presenter: ITodoDetailPresenter?
     
+    //MARK: - UI Elements
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = true
@@ -37,25 +40,8 @@ final class TodoDetailViewController: UIViewController {
         return backgroundView
     }()
     
-    private func makeTextView(fontSize: CGFloat, isBold: Bool) -> UITextView {
-        let textView = UITextView()
-        textView.textColor = .white
-        textView.font = isBold ? .boldSystemFont(ofSize: fontSize) : .systemFont(ofSize: fontSize)
-        textView.backgroundColor = .clear
-        textView.textContainerInset = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
-        textView.isScrollEnabled = false
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        return textView
-    }
-    
-    private lazy var titleTextView: UITextView = {
-        return makeTextView(fontSize: 28, isBold: true)
-    }()
-    
-    private lazy var noteTextView: UITextView = {
-        return makeTextView(fontSize: 16, isBold: false)
-    }()
-    
+    private lazy var titleTextView = UITextView.makeTextView(fontSize: 28, isBold: true)
+    private lazy var noteTextView = UITextView.makeTextView(fontSize: 16, isBold: false)
     private weak var activeTextView: UITextView?
     
     private lazy var doneButtonItem: UIBarButtonItem = {
@@ -74,16 +60,13 @@ final class TodoDetailViewController: UIViewController {
         setupView()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationItem.largeTitleDisplayMode = .always
-        navigationController?.navigationBar.prefersLargeTitles = true
-    }
-    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+}
     
+// MARK: - Setup Methods
+extension TodoDetailViewController {
     private func configureNavBar() {
         let icon = UIImageView(image: .backIcon)
         icon.tintColor = UIColor.yellowColor
@@ -118,8 +101,13 @@ final class TodoDetailViewController: UIViewController {
         setupLayout()
         registerKeyboardNotifications()
         setupGestures()
-        setupTextViewDelegates()
+        setupTextView()
         configureNavBar()
+    }
+    
+    private func setupTextView() {
+        titleTextView.delegate = self
+        noteTextView.delegate = self
         
         if let todoText = presenter?.todo?.todo, !todoText.isEmpty {
             titleTextView.text = todoText
@@ -132,54 +120,6 @@ final class TodoDetailViewController: UIViewController {
         } else {
             noteTextView.setPlaceholder(.visible("Enter notes..."))
         }
-    }
-    
-    // MARK: - Keyboard Notifications
-    // Вынести в отдельный киборд хэлпер
-    private func registerKeyboardNotifications() {
-        let keyboardNotifications: [(NSNotification.Name, Selector)] = [
-            (UIResponder.keyboardWillShowNotification, #selector(adjustForKeyboard)),
-            (UIResponder.keyboardWillHideNotification, #selector(adjustForKeyboard))
-        ]
-        
-        for (notification, selector) in keyboardNotifications {
-            NotificationCenter.default.addObserver(
-                self, selector: selector, name: notification, object: nil
-            )
-        }
-    }
-    
-    // Вынести в отдельный киборд хэлпер???
-    @objc private func adjustForKeyboard(notification: NSNotification) {
-        guard
-            let userInfo = notification.userInfo,
-            let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-            let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval
-        else { return }
-        
-        let keyboardHeight = notification.name == UIResponder.keyboardWillShowNotification ?
-        keyboardFrame.height - view.safeAreaInsets.bottom : 0
-        
-        UIView.animate(withDuration: duration) {
-            self.scrollView.contentInset.bottom = keyboardHeight
-            self.scrollView.verticalScrollIndicatorInsets.bottom = keyboardHeight
-            
-            if notification.name == UIResponder.keyboardWillShowNotification,
-               let textView = self.activeTextView {
-                let textViewFrame = textView.convert(textView.bounds, to: self.scrollView)
-                self.scrollView.scrollRectToVisible(textViewFrame, animated: false)
-            }
-        }
-    }
-    
-    // MARK: - Gestures
-    private func setupGestures() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-        view.addGestureRecognizer(tapGesture)
-    }
-    
-    @objc private func handleTap() {
-        view.endEditing(true)
     }
     
     private func setupLayout() {
@@ -216,14 +156,24 @@ final class TodoDetailViewController: UIViewController {
         ])
     }
     
-    // MARK: - UITextView Delegates
-    private func setupTextViewDelegates() {
-        titleTextView.delegate = self
-        noteTextView.delegate = self
+    private func setupGestures() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        view.addGestureRecognizer(tapGesture)
+    }
+}
+    
+// MARK: - Action Methods
+extension TodoDetailViewController {
+    
+    @objc private func doneButtonTapped() {
+        view.endEditing(true)
+    }
+    
+    @objc private func handleTap() {
+        view.endEditing(true)
     }
     
     @objc private func onBack() {
-//        presenter?.onBackButtonTapped()
         
         let title = (titleTextView.textColor == .lightGray) ? nil : titleTextView.text.nilIfEmpty
         let body = (noteTextView.textColor == .lightGray) ? nil : noteTextView.text.nilIfEmpty
@@ -239,6 +189,42 @@ final class TodoDetailViewController: UIViewController {
             }
         }
         presenter?.onBackButtonTapped()
+    }
+    
+    // MARK: - Keyboard Notifications
+    private func registerKeyboardNotifications() {
+        let keyboardNotifications: [(NSNotification.Name, Selector)] = [
+            (UIResponder.keyboardWillShowNotification, #selector(adjustForKeyboard)),
+            (UIResponder.keyboardWillHideNotification, #selector(adjustForKeyboard))
+        ]
+        
+        for (notification, selector) in keyboardNotifications {
+            NotificationCenter.default.addObserver(
+                self, selector: selector, name: notification, object: nil
+            )
+        }
+    }
+    
+    @objc private func adjustForKeyboard(notification: NSNotification) {
+        guard
+            let userInfo = notification.userInfo,
+            let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+            let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval
+        else { return }
+        
+        let keyboardHeight = notification.name == UIResponder.keyboardWillShowNotification ?
+        keyboardFrame.height - view.safeAreaInsets.bottom : 0
+        
+        UIView.animate(withDuration: duration) {
+            self.scrollView.contentInset.bottom = keyboardHeight
+            self.scrollView.verticalScrollIndicatorInsets.bottom = keyboardHeight
+            
+            if notification.name == UIResponder.keyboardWillShowNotification,
+               let textView = self.activeTextView {
+                let textViewFrame = textView.convert(textView.bounds, to: self.scrollView)
+                self.scrollView.scrollRectToVisible(textViewFrame, animated: false)
+            }
+        }
     }
 }
 
@@ -267,14 +253,10 @@ extension TodoDetailViewController: UITextViewDelegate {
             textView.textColor = .lightGray
         }
     }
-    
-    @objc private func doneButtonTapped() {
-        view.endEditing(true)
-    }
 }
 
-extension TodoDetailViewController: ITodoDetailViewController {
-    
+//MARK: - ITodoDetailView
+extension TodoDetailViewController: ITodoDetailView {
     func showError(message: String) {
         let alert = UIAlertController(title: message,
                                       message: "Пожалуйста, попробуйте снова",

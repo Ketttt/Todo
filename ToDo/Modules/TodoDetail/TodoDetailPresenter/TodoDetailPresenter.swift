@@ -18,7 +18,7 @@ protocol ITodoDetailPresenter {
 final class TodoDetailPresenter {
     var interactor: ITodoDetailInteractor
     var router: ITodoDetailRouter
-    var view: ITodoDetailViewController
+    var view: ITodoDetailView
     var todo: Todo?
     var output: TodoListModuleInput
     
@@ -26,7 +26,7 @@ final class TodoDetailPresenter {
     
     init(interactor: ITodoDetailInteractor,
          router: ITodoDetailRouter,
-         view: ITodoDetailViewController,
+         view: ITodoDetailView,
          todo: Todo?,
          output: TodoListModuleInput,
          isNewTodo: Bool) {

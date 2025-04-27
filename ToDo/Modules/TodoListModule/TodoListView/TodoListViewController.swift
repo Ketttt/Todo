@@ -17,6 +17,7 @@ protocol ITodoListView {
     func addNewTodo(todo: Todo)
     func showSearchResults(_ todos: [Todo])
     func showError(message: String)
+    func showLoading(_ isLoading: Bool)
 }
 
 //MARK: - ToDoViewController
@@ -49,20 +50,22 @@ final class TodoListViewController: UIViewController {
         searchController.searchBar.placeholder = "Поиск задач"
         searchController.searchBar.searchTextField.textColor = .white
         searchController.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(
-                    string: "Поиск задач",
-                    attributes: [.foregroundColor: UIColor.lightGray]
-                )
+            string: "Поиск задач",
+            attributes: [.foregroundColor: UIColor.lightGray]
+        )
         searchController.searchBar.searchTextField.leftView?.tintColor = .lightGray
         searchController.searchBar.tintColor = .white
         searchController.searchBar.searchTextField.backgroundColor = UIColor.darkGray
         return searchController
     }()
     
-    private func setupSearchController() {
-        searchController.searchResultsUpdater = self
-        searchController.delegate = self
-        definesPresentationContext = true
-    }
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .white
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
@@ -78,26 +81,22 @@ final class TodoListViewController: UIViewController {
             for: .editingChanged
         )
     }
+}
+
+// MARK: - Setup Methods
+extension TodoListViewController {
+    private func setupSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.delegate = self
+        definesPresentationContext = true
+    }
     
     private func setupTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
-
-    @objc private func dismissKeyboard() {
-        if searchController.isActive {
-            searchController.searchBar.resignFirstResponder()
-        } else {
-            view.endEditing(true)
-        }
-    }
-
-    @objc private func searchTextChanged() {
-        searchController.searchBar.searchTextField.textColor = .white
-    }
     
-    //MARK: - Private methods
     private func configureNavBar() {
         title = "Задачи"
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -114,15 +113,23 @@ final class TodoListViewController: UIViewController {
     }
     
     private func setupUI() {
+        
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = .white
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+        
         view.backgroundColor = .black
-        view.addSubview(tableView)
-        view.addSubview(bottomBar)
+        view.addSubviews(views: tableView, bottomBar, activityIndicator)
         tableView.delegate = self
         tableView.dataSource = self
         bottomBar.translatesAutoresizingMaskIntoConstraints = false
         view.safeAreaLayoutGuide.owningView?.backgroundColor = #colorLiteral(red: 0.1529409289, green: 0.1529413164, blue: 0.1615334749, alpha: 1)
         
         NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
             tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -137,8 +144,29 @@ final class TodoListViewController: UIViewController {
         bottomBar.setAddButtonAction(target: self, action: #selector(addTodoTapped))
     }
     
+}
+    
+// MARK: - Action Methods
+extension TodoListViewController {
+
+    @objc private func dismissKeyboard() {
+        if searchController.isActive {
+            searchController.searchBar.resignFirstResponder()
+        } else {
+            view.endEditing(true)
+        }
+    }
+    
+    @objc private func searchTextChanged() {
+        searchController.searchBar.searchTextField.textColor = .white
+    }
+    
     @objc private func addTodoTapped() {
         presenter?.showTodoDetail(todo: nil, true)
+    }
+    
+    @objc private func refreshData() {
+        presenter?.loadTodos()
     }
     
     private func editTodo(todo: Todo) {
@@ -173,7 +201,7 @@ extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
         
         let todo = currentTodos[indexPath.row]
         cell.selectionStyle = .none
-        cell.configure(todo: todo)
+        cell.configure(todo: todo, isMenu: false)
         cell.backgroundColor = .black
         cell.actionHandler = { [weak self] in
             guard let self else { return }
@@ -221,19 +249,13 @@ extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
             ) { _ in
                 self.presenter?.showTodoDetail(todo: todo, false)
             }
-            let export = UIAction(
-                title: "Поделиться",
-                image: UIImage(resource: .export)
-            ) { _ in
-                print("Tapped open")
-            }
             let trash = UIAction(
                 title: "Удалить",
                 image: UIImage(resource: .trash)
             ) { _ in
                 self.didDeleteTodo(todo)
             }
-            let menu = UIMenu(title: "", children: [edit, export, trash])
+            let menu = UIMenu(title: "", children: [edit, trash])
             return menu
         }
     }
@@ -242,8 +264,8 @@ extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
         let previewVC = UIViewController()
         previewVC.view.backgroundColor = #colorLiteral(red: 0.1529409289, green: 0.1529413164, blue: 0.1615334749, alpha: 1)
         
-        let todoCell = TodoCell(style: .default, reuseIdentifier: nil, true)
-        todoCell.configure(todo: todo)
+        let todoCell = TodoCell(style: .default, reuseIdentifier: nil)
+        todoCell.configure(todo: todo, isMenu: true)
         
         previewVC.view.layer.cornerRadius = 12
         previewVC.view.layer.masksToBounds = true
@@ -273,6 +295,17 @@ extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
 
 //MARK: - ITodoListView
 extension TodoListViewController: ITodoListView {
+    func showLoading(_ isLoading: Bool) {
+        if isLoading {
+            if !tableView.refreshControl!.isRefreshing {
+                activityIndicator.startAnimating()
+            }
+        } else {
+            activityIndicator.stopAnimating()
+            tableView.refreshControl?.endRefreshing()
+        }
+    }
+    
     func showError(message: String) {
         let alert = UIAlertController(title: message,
                                       message: "Пожалуйста, попробуйте снова",

@@ -43,14 +43,14 @@ extension CoreDataManager {
         let context = CoreDataManager.context
         let fetchRequest: NSFetchRequest<Note> = Note.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %d", id)
-
-            let notes = try context.fetch(fetchRequest)
-            guard let note = notes.first else {
-                throw CoreDataError.objectNotFound(id: id)
-            }
-            
-            note.body = body
-            note.title = todo
+        
+        let notes = try context.fetch(fetchRequest)
+        guard let note = notes.first else {
+            throw CoreDataError.objectNotFound(id: id)
+        }
+        
+        note.body = body
+        note.title = todo
         do {
             try context.save()
         } catch {
@@ -103,19 +103,17 @@ extension CoreDataManager {
         }
         note.completed.toggle()
         do {
-            let todo = Todo(
-                id: Int(note.id),
-                todo: note.title ?? "",
-                completed: note.completed,
-                body: note.body,
-                date: .now)
             try context.save()
-            return todo
         } catch {
             throw CoreDataError.saveFailed(error: error)
         }
         
-//        return todo
+        return Todo(
+            id: Int(note.id),
+            todo: note.title ?? "",
+            completed: note.completed,
+            body: note.body,
+            date: .now)
     }
     
     static func deleteTodo(id: Int) throws -> Todo {
@@ -126,19 +124,18 @@ extension CoreDataManager {
         guard let note = try context.fetch(fetchRequest).first else {
             throw CoreDataError.objectNotFound(id: id)
         }
-        let deletedTodo = Todo(
-            id: Int(note.id),
-            todo: note.title ?? "",
-            completed: note.completed,
-            body: note.body ?? ""
-        )
+        
         do {
             context.delete(note)
             try context.save()
         } catch {
             throw CoreDataError.saveFailed(error: error)
         }
-        return deletedTodo
+        return Todo(
+            id: Int(note.id),
+            todo: note.title ?? "",
+            completed: note.completed,
+            body: note.body ?? "")
     }
     
     static func addTodo(title: String?, body: String?, completed: Bool = false) throws -> Todo? {
@@ -153,17 +150,15 @@ extension CoreDataManager {
         note.completed = completed
         note.date = Date()
         do {
-            let newTodo = Todo(id: Int(note.id),
-                               todo: note.title ?? "",
-                               completed: note.completed,
-                               body: note.body ?? "",
-                               date: .now)
-            
             try context.save()
-            return newTodo
         } catch {
             throw CoreDataError.saveFailed(error: error)
         }
+        return Todo(id: Int(note.id),
+                    todo: note.title ?? "",
+                    completed: note.completed,
+                    body: note.body ?? "",
+                    date: .now)
         
     }
     
@@ -178,9 +173,9 @@ extension CoreDataManager {
             
             let todos = notes.map { note in
                 Todo(id: Int(note.id),
-                        todo: note.title ?? "",
-                        completed: note.completed,
-                        body: note.body)
+                     todo: note.title ?? "",
+                     completed: note.completed,
+                     body: note.body)
             }
             
             let newTodos = todos.map { $0 }
@@ -209,9 +204,9 @@ extension CoreDataManager {
             
             let todos = notes.map { note in
                 Todo(id: Int(note.id),
-                        todo: note.title ?? "",
-                        completed: note.completed,
-                        body: note.body)
+                     todo: note.title ?? "",
+                     completed: note.completed,
+                     body: note.body)
             }
             
             let newTodos = todos.map { $0 }

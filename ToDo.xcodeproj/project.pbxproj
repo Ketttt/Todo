@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D10E06112DBE83BD00E3E5CB /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10E06102DBE83BD00E3E5CB /* UILabel+Extension.swift */; };
 		D128BD5E2D53A651005D6FB2 /* TodoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D128BD5D2D53A651005D6FB2 /* TodoCell.swift */; };
 		D128BD622D53CA6C005D6FB2 /* Todos.swift in Sources */ = {isa = PBXBuildFile; fileRef = D128BD612D53CA6C005D6FB2 /* Todos.swift */; };
 		D128BD652D53F6A9005D6FB2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D128BD642D53F6A9005D6FB2 /* NetworkService.swift */; };
@@ -61,6 +62,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D10E06102DBE83BD00E3E5CB /* UILabel+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
 		D128BD5D2D53A651005D6FB2 /* TodoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoCell.swift; sourceTree = "<group>"; };
 		D128BD612D53CA6C005D6FB2 /* Todos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todos.swift; sourceTree = "<group>"; };
 		D128BD642D53F6A9005D6FB2 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
@@ -359,6 +361,7 @@
 				D17162D12DABE96100E377BD /* UserDefaults+Extension.swift */,
 				D13F1CD32DB67D0F004AD683 /* UITextView+Extension.swift */,
 				D13F1CD52DB6DF54004AD683 /* String+Extension.swift */,
+				D10E06102DBE83BD00E3E5CB /* UILabel+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -503,6 +506,7 @@
 			files = (
 				D1F948362D5E4A1800A3FB66 /* UIView+Extensions.swift in Sources */,
 				D14286702D64851A0091242D /* NetworkMonitor.swift in Sources */,
+				D10E06112DBE83BD00E3E5CB /* UILabel+Extension.swift in Sources */,
 				D154DBB12D5A3C4B00630BF0 /* TodoDetailInteractor.swift in Sources */,
 				D128BD652D53F6A9005D6FB2 /* NetworkService.swift in Sources */,
 				D128BD6F2D541A07005D6FB2 /* APIClient.swift in Sources */,
