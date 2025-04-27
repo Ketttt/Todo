@@ -65,7 +65,7 @@ extension TodoDetailPresenter: ITodoDetailPresenter {
         do {
             guard let addTodo = try CoreDataManager.addTodo(title: todo, body: body)
             else { return }
-            await  output.addNewTodo(todo: addTodo)
+            await output.addNewTodo(todo: addTodo)
         } catch CoreDataError.saveFailed(let error) {
             await view.showError(message: "Не удалось добавить новую todo: \(error.localizedDescription)")
         } catch {

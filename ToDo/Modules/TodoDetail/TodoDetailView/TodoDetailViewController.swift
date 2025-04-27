@@ -223,7 +223,7 @@ final class TodoDetailViewController: UIViewController {
     }
     
     @objc private func onBack() {
-        presenter?.onBackButtonTapped()
+//        presenter?.onBackButtonTapped()
         
         let title = (titleTextView.textColor == .lightGray) ? nil : titleTextView.text.nilIfEmpty
         let body = (noteTextView.textColor == .lightGray) ? nil : noteTextView.text.nilIfEmpty
@@ -238,6 +238,7 @@ final class TodoDetailViewController: UIViewController {
                 await presenter?.updateTodo(todo: title, body: body)
             }
         }
+        presenter?.onBackButtonTapped()
     }
 }
 

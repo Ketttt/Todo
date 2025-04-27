@@ -322,11 +322,13 @@ extension TodoListViewController: ITodoListView {
     }
     
     func addNewTodo(todo: Todo) {
-        todos.insert(todo, at: 0)
-        if searchController.isActive {
-            filteredTodos.insert(todo, at: 0)
-        }
-        tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .right)
+        UIView.animate(withDuration: 0.3) {
+            self.todos.insert(todo, at: 0)
+            if self.searchController.isActive {
+                self.filteredTodos.insert(todo, at: 0)
+            }
+            self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .right)
+        } completion: { _ in self.tableView.reloadData() }
         self.bottomBar.updateTakCount(todos.count)
     }
 }

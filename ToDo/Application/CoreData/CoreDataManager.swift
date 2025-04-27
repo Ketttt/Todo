@@ -103,17 +103,19 @@ extension CoreDataManager {
         }
         note.completed.toggle()
         do {
+            let todo = Todo(
+                id: Int(note.id),
+                todo: note.title ?? "",
+                completed: note.completed,
+                body: note.body,
+                date: .now)
             try context.save()
+            return todo
         } catch {
             throw CoreDataError.saveFailed(error: error)
         }
-        let todo = Todo(
-            id: Int(note.id),
-            todo: note.title ?? "",
-            completed: note.completed,
-            body: note.body,
-            date: .now)
-        return todo
+        
+//        return todo
     }
     
     static func deleteTodo(id: Int) throws -> Todo {
@@ -143,23 +145,26 @@ extension CoreDataManager {
         
         let context = CoreDataManager.context
         let note = Note(context: context)
-        note.id = Int64(UUID().uuidString) ?? 0
+        let hexPart = String(UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(4))
+        note.id = Int64(hexPart, radix: 16) ?? 0
         
         note.title = title
         note.body = body
         note.completed = completed
         note.date = Date()
         do {
+            let newTodo = Todo(id: Int(note.id),
+                               todo: note.title ?? "",
+                               completed: note.completed,
+                               body: note.body ?? "",
+                               date: .now)
+            
             try context.save()
+            return newTodo
         } catch {
             throw CoreDataError.saveFailed(error: error)
         }
-        let newTodo = Todo(id: Int(note.id),
-                           todo: note.title ?? "",
-                           completed: note.completed,
-                           body: note.body ?? "",
-                           date: .now)
-        return newTodo
+        
     }
     
     static func fetchTodoFromCoreData() throws -> [Todo] {
@@ -179,6 +184,7 @@ extension CoreDataManager {
             }
             
             let newTodos = todos.map { $0 }
+            print("newTodos = \(newTodos)")
             return newTodos
         } catch {
             throw CoreDataError.fetchFailed
